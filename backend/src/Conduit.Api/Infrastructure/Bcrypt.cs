@@ -6,9 +6,16 @@ namespace Conduit.Api.Infrastructure
     {
         public Task<string> Make(string value)
         {
-            string hash = BCrypt.Net.BCrypt.HashPassword(value);
+            string result = BCrypt.Net.BCrypt.HashPassword(value);
 
-            return Task.FromResult(hash);
+            return Task.FromResult(result);
+        }
+
+        public Task<bool> Verify(string value, string hash)
+        {
+            bool result = BCrypt.Net.BCrypt.Verify(value, hash);
+
+            return Task.FromResult(result);
         }
     }
 }
