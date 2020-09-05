@@ -51,7 +51,7 @@ namespace Conduit.Api
 
                         var result = new ObjectResult(new ErrorResponse(message))
                         {
-                            StatusCode = 402
+                            StatusCode = 422
                         };
 
                         return result;
