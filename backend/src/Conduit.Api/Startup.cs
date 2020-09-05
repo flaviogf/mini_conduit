@@ -38,6 +38,8 @@ namespace Conduit.Api
 
             services.AddScoped<IUserRepository, EFUserRepository>();
 
+            services.AddScoped<IArticleRepository, EFArticleRepository>();
+
             services
                 .AddControllers()
                 .ConfigureApiBehaviorOptions(it =>
