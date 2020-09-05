@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Conduit.Api.Infrastructure;
 using Conduit.Api.Models;
@@ -23,6 +24,14 @@ namespace Conduit.Api.Controllers
             _articleRepository = articleRepository;
             _auth = auth;
             _uow = uow;
+        }
+
+        [HttpGet]
+        public IActionResult Index(int offset, int limit)
+        {
+            IEnumerable<Article> articles = _articleRepository.Filter(offset, limit);
+
+            return Ok(new ArticlesResponse(articles));
         }
 
         [Authorize]
