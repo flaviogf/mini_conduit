@@ -50,13 +50,13 @@ namespace Conduit.Api.Infrastructure
 
         public async Task<User> GetUser()
         {
-            string email = _httpContextAccessor.HttpContext.User?.Identity?.Name;
+            string id = _httpContextAccessor.HttpContext.User.Identity.Name;
 
-            Maybe<User> maybeUser = await _userRepository.FindByEmail(email);
+            Maybe<User> maybeUser = await _userRepository.Find(id);
 
             if (maybeUser.HasNoValue)
             {
-                throw new InvalidOperationException("This method can be called only in authorized methods.");
+                throw new InvalidOperationException("Logged-in user cannot be found.");
             }
 
             User user = maybeUser.Value;
@@ -74,7 +74,7 @@ namespace Conduit.Api.Infrastructure
 
             var claims = new Claim[]
             {
-                new Claim(ClaimTypes.Name, user.Email)
+                new Claim(ClaimTypes.Name, user.Id)
             };
 
             var descriptor = new SecurityTokenDescriptor
