@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Conduit.Api.Infrastructure;
 using Conduit.Api.Models;
 using Conduit.Api.Repositories;
@@ -49,6 +50,7 @@ namespace Conduit.Api.Controllers
 
             var user = new User
             {
+                Id = Guid.NewGuid().ToString(),
                 Username = request.User.Username,
                 Email = request.User.Email,
                 PasswordHash = passwordHash,
@@ -59,6 +61,34 @@ namespace Conduit.Api.Controllers
             await _uow.Commit();
 
             return Created(new UserResponse(user));
+        }
+
+        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> Edit([FromBody] EditUserRequest request)
+        {
+            User user = await _auth.GetUser();
+
+            Maybe<User> maybeUser = await _userRepository.FindByEmail(request.User.Email);
+
+            if (maybeUser.HasValue && user.Id != maybeUser.Value.Id)
+            {
+                return UnexpectedError(new ErrorResponse("This email is already taken."));
+            }
+
+            user.Username = request.User.Username;
+            user.Email = request.User.Email;
+            user.Bio = request.User.Bio;
+            user.Image = request.User.Image;
+
+            if (!string.IsNullOrWhiteSpace(request.User.Password))
+            {
+                user.PasswordHash = await _hash.Make(request.User.Password);
+            }
+
+            await _uow.Commit();
+
+            return Ok(new UserResponse(user));
         }
     }
 }
