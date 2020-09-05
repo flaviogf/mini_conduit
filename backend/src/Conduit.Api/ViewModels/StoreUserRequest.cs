@@ -2,9 +2,9 @@
 
 namespace Conduit.Api.ViewModels
 {
-    public class NewUserRequest
+    public class StoreUserRequest
     {
         [Required]
-        public NewUser User { get; set; }
+        public StoreUser User { get; set; }
     }
 }

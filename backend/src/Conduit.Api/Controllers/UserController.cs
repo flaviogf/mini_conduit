@@ -24,7 +24,7 @@ namespace Conduit.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Store([FromBody] NewUserRequest request)
+        public async Task<IActionResult> Store([FromBody] StoreUserRequest request)
         {
             Maybe<User> maybeUser = await _userRepository.FindByEmail(request.User.Email);
 
@@ -46,7 +46,7 @@ namespace Conduit.Api.Controllers
 
             await _uow.Commit();
 
-            return Created(new NewUserResponse(user));
+            return Created(new UserResponse(user));
         }
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Conduit.Api.ViewModels
 {
-    public class NewUserResponse
+    public class UserResponse
     {
-        public NewUserResponse(User user)
+        public UserResponse(User user)
         {
             User = user;
         }

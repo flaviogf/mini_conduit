@@ -2,7 +2,7 @@
 
 namespace Conduit.Api.ViewModels
 {
-    public class NewUser
+    public class StoreUser
     {
         [Required]
         public string Username { get; set; }
