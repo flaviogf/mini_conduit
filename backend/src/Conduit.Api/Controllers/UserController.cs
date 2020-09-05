@@ -43,7 +43,7 @@ namespace Conduit.Api.Controllers
 
             if (maybeUser.HasValue)
             {
-                return UnexpectedError(new ErrorResponse("This email is already taken"));
+                return UnexpectedError(new ErrorResponse("This email is already taken."));
             }
 
             string passwordHash = await _hash.Make(request.User.Password);
