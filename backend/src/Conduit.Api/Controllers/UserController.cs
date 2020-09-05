@@ -80,11 +80,7 @@ namespace Conduit.Api.Controllers
             user.Email = request.User.Email;
             user.Bio = request.User.Bio;
             user.Image = request.User.Image;
-
-            if (!string.IsNullOrWhiteSpace(request.User.Password))
-            {
-                user.PasswordHash = await _hash.Make(request.User.Password);
-            }
+            user.PasswordHash = await _hash.Make(request.User.Password);
 
             await _uow.Commit();
 
