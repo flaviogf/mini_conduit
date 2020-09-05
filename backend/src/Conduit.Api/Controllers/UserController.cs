@@ -4,6 +4,7 @@ using Conduit.Api.Models;
 using Conduit.Api.Repositories;
 using Conduit.Api.ViewModels;
 using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Conduit.Api.Controllers
@@ -15,12 +16,23 @@ namespace Conduit.Api.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IHash _hash;
         private readonly IUnitOfWork _uow;
+        private readonly IAuth _auth;
 
-        public UserController(IUserRepository userRepository, IHash hash, IUnitOfWork uow)
+        public UserController(IUserRepository userRepository, IHash hash, IUnitOfWork uow, IAuth auth)
         {
             _userRepository = userRepository;
             _hash = hash;
             _uow = uow;
+            _auth = auth;
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            User user = await _auth.GetUser();
+
+            return Ok(new UserResponse(user));
         }
 
         [HttpPost]
