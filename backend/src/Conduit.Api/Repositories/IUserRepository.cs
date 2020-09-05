@@ -8,6 +8,8 @@ namespace Conduit.Api.Repositories
     {
         Task Save(User user);
 
+        Task<Maybe<User>> Find(string id);
+
         Task<Maybe<User>> FindByEmail(string email);
     }
 }

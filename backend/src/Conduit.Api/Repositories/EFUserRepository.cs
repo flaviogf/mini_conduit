@@ -19,6 +19,11 @@ namespace Conduit.Api.Repositories
             await _context.Users.AddAsync(user);
         }
 
+        public async Task<Maybe<User>> Find(string id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(it => it.Id == id);
+        }
+
         public async Task<Maybe<User>> FindByEmail(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(it => it.Email == email);
