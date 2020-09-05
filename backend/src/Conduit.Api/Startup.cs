@@ -29,6 +29,8 @@ namespace Conduit.Api
 
             services.AddScoped<IHash, Bcrypt>();
 
+            services.AddScoped<IAuth, Jwt>();
+
             services.AddScoped<IUserRepository, EFUserRepository>();
 
             services
