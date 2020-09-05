@@ -4,6 +4,7 @@ using Conduit.Api.Infrastructure;
 using Conduit.Api.Models;
 using Conduit.Api.Repositories;
 using Conduit.Api.ViewModels;
+using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,6 +46,21 @@ namespace Conduit.Api.Controllers
             await _uow.Commit();
 
             return Created(new ArticleResponse(article));
+        }
+
+        [HttpGet("{slug}")]
+        public async Task<IActionResult> Show(string slug)
+        {
+            Maybe<Article> maybeArticle = await _articleRepository.Find(slug);
+
+            if (maybeArticle.HasNoValue)
+            {
+                return UnexpectedError(new ErrorResponse("Article does not exist."));
+            }
+
+            Article article = maybeArticle.Value;
+
+            return Ok(new ArticleResponse(article));
         }
     }
 }
