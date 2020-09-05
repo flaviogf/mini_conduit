@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Conduit.Api.Models
 {
     public class User
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public string Username { get; set; }
 
@@ -14,7 +13,6 @@ namespace Conduit.Api.Models
         [JsonIgnore]
         public string PasswordHash { get; set; }
 
-        [NotMapped]
         public string Token { get; set; }
 
         public string Bio { get; set; }
