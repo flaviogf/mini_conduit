@@ -18,7 +18,7 @@ namespace Conduit.Api.Controllers
         {
             var result = new ObjectResult(value)
             {
-                StatusCode = 402
+                StatusCode = 422
             };
 
             return result;
