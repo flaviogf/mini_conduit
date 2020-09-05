@@ -7,5 +7,7 @@ namespace Conduit.Api.Infrastructure
     public interface IAuth
     {
         Task<Result<User>> Attempt(string email, string password);
+
+        Task<User> GetUser();
     }
 }

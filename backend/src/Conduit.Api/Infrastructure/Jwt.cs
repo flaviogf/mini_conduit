@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Conduit.Api.Models;
 using Conduit.Api.Repositories;
 using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -16,12 +17,14 @@ namespace Conduit.Api.Infrastructure
         private readonly IUserRepository _userRepository;
         private readonly IHash _hash;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public Jwt(IUserRepository userRepository, IHash hash, IConfiguration configuration)
+        public Jwt(IUserRepository userRepository, IHash hash, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _hash = hash;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<Result<User>> Attempt(string email, string password)
@@ -40,25 +43,50 @@ namespace Conduit.Api.Infrastructure
                 return Result.Failure<User>("Wrong email or password.");
             }
 
+            user.Token = TokenFor(user);
+
+            return user;
+        }
+
+        public async Task<User> GetUser()
+        {
+            string email = _httpContextAccessor.HttpContext.User?.Identity?.Name;
+
+            Maybe<User> maybeUser = await _userRepository.FindByEmail(email);
+
+            if (maybeUser.HasNoValue)
+            {
+                throw new InvalidOperationException("This method can be called only in authorized methods.");
+            }
+
+            User user = maybeUser.Value;
+
+            user.Token = TokenFor(user);
+
+            return user;
+        }
+
+        private string TokenFor(User user)
+        {
             var handler = new JwtSecurityTokenHandler();
 
             byte[] key = Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Jwt:Secret"));
 
+            var claims = new Claim[]
+            {
+                new Claim(ClaimTypes.Name, user.Email)
+            };
+
             var descriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.Email)
-                }),
-                Expires = DateTime.UtcNow.AddDays(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddDays(1)
             };
 
             SecurityToken token = handler.CreateToken(descriptor);
 
-            user.Token = handler.WriteToken(token);
-
-            return user;
+            return handler.WriteToken(token);
         }
     }
 }
