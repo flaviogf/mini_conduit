@@ -42,6 +42,14 @@ namespace Conduit.Api
             modelBuilder
                 .Entity<User>()
                 .Ignore(it => it.Token);
+
+            modelBuilder
+                .Entity<User>()
+                .Property(it => it.Bio);
+
+            modelBuilder
+                .Entity<User>()
+                .Property(it => it.Image);
         }
     }
 }
