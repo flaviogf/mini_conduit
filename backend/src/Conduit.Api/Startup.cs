@@ -42,6 +42,7 @@ namespace Conduit.Api
 
             services
                 .AddControllers()
+                .AddNewtonsoftJson()
                 .ConfigureApiBehaviorOptions(it =>
                 {
                     it.InvalidModelStateResponseFactory = (context) =>
