@@ -27,9 +27,9 @@ namespace Conduit.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(int offset, int limit)
+        public IActionResult Index([FromQuery] ArticlesFilter filter, [FromQuery] int offset = 0, [FromQuery] int limit = 20)
         {
-            IEnumerable<Article> articles = _articleRepository.Filter(offset, limit);
+            IEnumerable<Article> articles = _articleRepository.Filter(filter, offset, limit);
 
             return Ok(new ArticlesResponse(articles));
         }
