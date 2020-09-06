@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Conduit.Api.Models;
+using Conduit.Api.ViewModels;
 using CSharpFunctionalExtensions;
 
 namespace Conduit.Api.Repositories
@@ -11,6 +12,6 @@ namespace Conduit.Api.Repositories
 
         Task<Maybe<Article>> Find(string slug);
 
-        IEnumerable<Article> Filter(int offset, int limit);
+        IEnumerable<Article> Filter(ArticlesFilter filter, int offset, int limit);
     }
 }
