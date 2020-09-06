@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Conduit.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Conduit.Api
@@ -110,6 +111,15 @@ namespace Conduit.Api
                 .HasOne(it => it.Author);
 
             #endregion
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            ILoggerFactory factory = LoggerFactory.Create(it => it.AddConsole());
+
+            optionsBuilder.UseLoggerFactory(factory);
         }
     }
 }
