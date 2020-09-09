@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Conduit.Core
+namespace Conduit.Core.Articles
 {
     public class Article
     {

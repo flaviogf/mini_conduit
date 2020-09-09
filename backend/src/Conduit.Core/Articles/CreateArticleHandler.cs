@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using MediatR;
 
-namespace Conduit.Core
+namespace Conduit.Core.Articles
 {
-    public class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Result>
+    public class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Result<CreateArticleResponse>>
     {
         private readonly IArticleRepository _articleRepository;
 
@@ -14,7 +14,7 @@ namespace Conduit.Core
             _articleRepository = articleRepository;
         }
 
-        public async Task<Result> Handle(CreateArticleRequest request, CancellationToken cancellationToken)
+        public async Task<Result<CreateArticleResponse>> Handle(CreateArticleRequest request, CancellationToken cancellationToken)
         {
             var article = new Article(request.Title, request.Description, request.Body);
 
@@ -22,7 +22,7 @@ namespace Conduit.Core
 
             await _articleRepository.Add(article);
 
-            return Result.Success();
+            return Result.Success(new CreateArticleResponse(article));
         }
     }
 }

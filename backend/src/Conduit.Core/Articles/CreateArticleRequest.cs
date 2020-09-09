@@ -2,9 +2,9 @@
 using CSharpFunctionalExtensions;
 using MediatR;
 
-namespace Conduit.Core
+namespace Conduit.Core.Articles
 {
-    public sealed class CreateArticleRequest : IRequest<Result>
+    public sealed class CreateArticleRequest : IRequest<Result<CreateArticleResponse>>
     {
         public CreateArticleRequest(string title, string description, string body, IEnumerable<string> tagList)
         {

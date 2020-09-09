@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Conduit.Core
+namespace Conduit.Core.Articles
 {
     public class Slug
     {

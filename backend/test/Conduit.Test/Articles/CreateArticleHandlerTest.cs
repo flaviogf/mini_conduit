@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Conduit.Core;
+using Conduit.Core.Articles;
 using CSharpFunctionalExtensions;
 using Moq;
 using Xunit;
 
-namespace Conduit.Test
+namespace Conduit.Test.Articles
 {
     public class CreateArticleHandlerTest
     {

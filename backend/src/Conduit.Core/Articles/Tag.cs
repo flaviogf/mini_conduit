@@ -1,4 +1,4 @@
-﻿namespace Conduit.Core
+﻿namespace Conduit.Core.Articles
 {
     public class Tag
     {

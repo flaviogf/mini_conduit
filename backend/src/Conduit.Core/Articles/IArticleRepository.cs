@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Conduit.Core
+namespace Conduit.Core.Articles
 {
     public interface IArticleRepository
     {

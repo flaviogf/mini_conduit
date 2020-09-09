@@ -1,7 +1,7 @@
-﻿using Conduit.Core;
+﻿using Conduit.Core.Articles;
 using Xunit;
 
-namespace Conduit.Test
+namespace Conduit.Test.Articles
 {
     public class SlugTest
     {
