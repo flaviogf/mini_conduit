@@ -11,6 +11,19 @@ namespace Conduit.Core
 
         public string Value { get; }
 
-        private string Slugify(string value) => Regex.Replace(value, @"\s", "-").ToLower();
+        private string Slugify(string value)
+        {
+            return Regex.Replace(value, @"\s", "-").ToLower();
+        }
+
+        public override string ToString()
+        {
+            return Value;
+        }
+
+        public static implicit operator string(Slug slug)
+        {
+            return slug.Value;
+        }
     }
 }
