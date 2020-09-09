@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Conduit.Core
 {
-    class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Result>
+    public class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Result>
     {
         private readonly IArticleRepository _articleRepository;
 
