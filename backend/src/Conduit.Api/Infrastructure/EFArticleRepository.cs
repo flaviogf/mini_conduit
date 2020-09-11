@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Conduit.Core.Articles;
 
-namespace Conduit.Api.Repositories
+namespace Conduit.Api.Infrastructure
 {
     public class EFArticleRepository : IArticleRepository
     {
