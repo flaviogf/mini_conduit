@@ -26,7 +26,7 @@ namespace Conduit.Api.Infrastructure
 
             var subject = new ClaimsIdentity(new Claim[]
             {
-                new Claim(ClaimTypes.Name, user.Id)
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id)
             });
 
             var secret = _configuration.GetValue<string>("JwtConfig:Secret");
