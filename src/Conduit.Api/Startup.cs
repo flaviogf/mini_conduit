@@ -1,8 +1,10 @@
 using System.Linq;
+using System.Text;
 using Conduit.Api.Database;
 using Conduit.Api.Infrastructure;
 using Conduit.Api.Models;
 using Conduit.Api.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace Conduit.Api
@@ -26,6 +29,8 @@ namespace Conduit.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ConduitDbContext>(it => it.UseSqlite(_configuration.GetConnectionString("ConduitDbContext")));
+
             services.AddDbContext<IdentityDbContext>(it => it.UseSqlite(_configuration.GetConnectionString("IdentityDbContext")));
 
             services
@@ -42,6 +47,30 @@ namespace Conduit.Api
                 it.Password.RequireUppercase = false;
 
                 it.User.RequireUniqueEmail = true;
+            });
+
+            services.AddAuthentication(it =>
+            {
+                it.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                it.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(it =>
+            {
+                var secret = _configuration.GetValue<string>("JwtConfig:Secret");
+
+                var key = Encoding.UTF8.GetBytes(secret);
+
+                it.RequireHttpsMetadata = false;
+
+                it.SaveToken = true;
+
+                it.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
             });
 
             services.AddScoped<ITokenManager<User>, JwtTokenManager<User>>();
@@ -79,6 +108,10 @@ namespace Conduit.Api
             });
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(it => it.MapControllers());
         }
