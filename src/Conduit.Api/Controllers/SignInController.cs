@@ -35,7 +35,7 @@ namespace Conduit.Api.Controllers
                 return Unauthorized(Res.Failure("Wrong email or password."));
             }
 
-            Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(user, req.Password, false, false);
+            Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.CheckPasswordSignInAsync(user, req.Password, false);
 
             if (!signInResult.Succeeded)
             {
