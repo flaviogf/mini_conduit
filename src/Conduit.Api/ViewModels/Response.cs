@@ -22,6 +22,11 @@ namespace Conduit.Api.ViewModels
             return new Response(errors);
         }
 
+        public static Response Failure(params string[] errors)
+        {
+            return new Response(errors);
+        }
+
         public static Response<T> Success<T>(T content)
         {
             return new Response<T>(content, Enumerable.Empty<string>());

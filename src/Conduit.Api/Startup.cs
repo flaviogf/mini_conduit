@@ -1,5 +1,6 @@
 using System.Linq;
 using Conduit.Api.Database;
+using Conduit.Api.Infrastructure;
 using Conduit.Api.Models;
 using Conduit.Api.ViewModels;
 using Microsoft.AspNetCore.Builder;
@@ -42,6 +43,8 @@ namespace Conduit.Api
 
                 it.User.RequireUniqueEmail = true;
             });
+
+            services.AddScoped<ITokenManager<User>, JwtTokenManager<User>>();
 
             services
                 .AddControllers()
