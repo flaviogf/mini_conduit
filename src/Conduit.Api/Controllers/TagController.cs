@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Conduit.Api.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Res = Conduit.Api.ViewModels.Response;
+using Res = Conduit.Api.Infrastructure.Response;
 
 namespace Conduit.Api.Controllers
 {

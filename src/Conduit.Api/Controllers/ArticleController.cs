@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Conduit.Api.Database;
+using Conduit.Api.Infrastructure;
 using Conduit.Api.Models;
 using Conduit.Api.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Res = Conduit.Api.ViewModels.Response;
+using Res = Conduit.Api.Infrastructure.Response;
 
 namespace Conduit.Api.Controllers
 {
@@ -51,6 +52,15 @@ namespace Conduit.Api.Controllers
             await _context.SaveChangesAsync();
 
             return Created($"api/article/{article.Id}", Res.Success(article.Id));
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var pagination = Pagination.Of(_context.Articles, page, pageSize);
+
+            return Ok(Res.Success(pagination));
         }
 
         private async Task<IEnumerable<Tag>> GetOrCreateTags(IEnumerable<string> tags)

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Conduit.Api.ViewModels
+namespace Conduit.Api.Infrastructure
 {
     public class Response
     {

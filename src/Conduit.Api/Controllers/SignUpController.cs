@@ -4,7 +4,7 @@ using Conduit.Api.Models;
 using Conduit.Api.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Res = Conduit.Api.ViewModels.Response;
+using Res = Conduit.Api.Infrastructure.Response;
 
 namespace Conduit.Api.Controllers
 {

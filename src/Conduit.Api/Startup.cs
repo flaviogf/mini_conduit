@@ -3,7 +3,6 @@ using System.Text;
 using Conduit.Api.Database;
 using Conduit.Api.Infrastructure;
 using Conduit.Api.Models;
-using Conduit.Api.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
