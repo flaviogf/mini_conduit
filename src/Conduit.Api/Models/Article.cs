@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Conduit.Api.Models
@@ -27,6 +28,16 @@ namespace Conduit.Api.Models
         private void AddTag(Tag tag)
         {
             Tags.Add(new ArticleTag { Article = this, Tag = tag });
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Article article && Id == article.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id);
         }
     }
 }
