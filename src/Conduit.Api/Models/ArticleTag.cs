@@ -1,3 +1,5 @@
+using System;
+
 namespace Conduit.Api.Models
 {
     public class ArticleTag
@@ -9,5 +11,15 @@ namespace Conduit.Api.Models
         public Tag Tag { get; set; }
 
         public string TagId { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ArticleTag tag && ArticleId == tag.ArticleId && TagId == tag.TagId;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(ArticleId, TagId);
+        }
     }
 }
