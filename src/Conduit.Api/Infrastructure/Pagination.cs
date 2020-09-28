@@ -9,7 +9,7 @@ namespace Conduit.Api.Infrastructure
     {
         protected Pagination(IEnumerable items, int page, int pageSize)
         {
-            Items = items;
+            Items = items.Cast<object>().Skip((page - 1) * pageSize).Take(pageSize);
             Page = page;
             PageSize = pageSize;
             Total = items.Cast<object>().Count();
