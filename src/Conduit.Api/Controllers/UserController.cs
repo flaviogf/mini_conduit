@@ -63,7 +63,7 @@ namespace Conduit.Api.ViewModels
 
                 await _context.SaveChangesAsync();
 
-                return Ok(Res.Success());
+                return Ok(Res.Success(user.Id));
             }
 
             result = await _userManager.ChangePasswordAsync(user, req.CurrentPassword, req.NewPassword);
