@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Conduit.Api.Database;
+using Conduit.Api.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Res = Conduit.Api.Infrastructure.Response;
@@ -12,9 +15,12 @@ namespace Conduit.Api.Controllers
     {
         private readonly ConduitDbContext _context;
 
-        public TagController(ConduitDbContext context)
+        private readonly IMapper _mapper;
+
+        public TagController(ConduitDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -24,7 +30,7 @@ namespace Conduit.Api.Controllers
                 .AsNoTracking()
                 .ToListAsync();
 
-            return Ok(Res.Success(tags));
+            return Ok(Res.Success(_mapper.Map<IEnumerable<TagViewModel>>(tags)));
         }
     }
 }

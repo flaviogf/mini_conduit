@@ -13,7 +13,7 @@ namespace Conduit.Api.Models
 
         public string Body { get; set; }
 
-        public string AuthorId { get; set; }
+        public User Author { get; set; }
 
         public IList<ArticleTag> Tags { get; set; } = new List<ArticleTag>();
 

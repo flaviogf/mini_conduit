@@ -1,8 +1,11 @@
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using AutoMapper;
 using Conduit.Api.Database;
 using Conduit.Api.Infrastructure;
 using Conduit.Api.Models;
+using Conduit.Api.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,11 +33,9 @@ namespace Conduit.Api
         {
             services.AddDbContext<ConduitDbContext>(it => it.UseSqlite(_configuration.GetConnectionString("ConduitDbContext")));
 
-            services.AddDbContext<IdentityDbContext>(it => it.UseSqlite(_configuration.GetConnectionString("IdentityDbContext")));
-
             services
                 .AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<IdentityDbContext>();
+                .AddEntityFrameworkStores<ConduitDbContext>();
 
             services.Configure<IdentityOptions>(it =>
             {
@@ -74,8 +75,21 @@ namespace Conduit.Api
 
             services.AddScoped<ITokenManager<User>, JwtTokenManager<User>>();
 
+            services.AddAutoMapper(it =>
+            {
+                it.CreateMap<Article, ArticleViewModel>();
+                it.CreateMap<ArticleTag, ArticleTagViewModel>();
+                it.CreateMap<Role, RoleViewModel>();
+                it.CreateMap<Tag, TagViewModel>();
+                it.CreateMap<User, UserViewModel>();
+            }, Assembly.GetExecutingAssembly());
+
             services
                 .AddControllers()
+                .AddNewtonsoftJson(it =>
+                {
+                    it.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                })
                 .ConfigureApiBehaviorOptions(it =>
                 {
                     it.InvalidModelStateResponseFactory = (context) =>

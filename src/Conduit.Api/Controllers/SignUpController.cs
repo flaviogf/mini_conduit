@@ -37,7 +37,7 @@ namespace Conduit.Api.Controllers
                 return UnprocessableEntity(Res.Failure(errors));
             }
 
-            return Created("/user", Res.Success(user.Id));
+            return Created("/api/user", Res.Success(user.Id));
         }
     }
 }

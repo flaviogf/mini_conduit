@@ -1,9 +1,10 @@
 using Conduit.Api.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Api.Database
 {
-    public class ConduitDbContext : DbContext
+    public class ConduitDbContext : IdentityDbContext<User, Role, string>
     {
         public ConduitDbContext(DbContextOptions<ConduitDbContext> options) : base(options)
         {
@@ -13,53 +14,67 @@ namespace Conduit.Api.Database
 
         public DbSet<Tag> Tags { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(builder);
 
-            modelBuilder
+            builder
+                .Entity<UserSubscription>()
+                .HasKey(it => new { it.SubscriberId, it.SubscriptionId });
+
+            builder
+                .Entity<UserSubscription>()
+                .HasOne(it => it.Subscriber)
+                .WithMany(it => it.Subscriptions);
+
+            builder
+                .Entity<UserSubscription>()
+                .HasOne(it => it.Subscription)
+                .WithMany(it => it.Subscribers);
+
+            builder
                 .Entity<Article>()
                 .HasKey(it => it.Id);
 
-            modelBuilder
+            builder
                 .Entity<Article>()
                 .Property(it => it.Title)
                 .IsRequired();
 
-            modelBuilder
+            builder
                 .Entity<Article>()
                 .Property(it => it.Description)
                 .IsRequired();
 
-            modelBuilder
+            builder
                 .Entity<Article>()
                 .Property(it => it.Body)
                 .IsRequired();
 
-            modelBuilder
+            builder
                 .Entity<Article>()
-                .Property(it => it.AuthorId)
-                .IsRequired();
+                .HasOne(it => it.Author)
+                .WithMany(it => it.Articles);
 
-            modelBuilder
+            builder
                 .Entity<Article>()
                 .HasMany(it => it.Tags)
                 .WithOne(it => it.Article);
 
-            modelBuilder
+            builder
                 .Entity<ArticleTag>()
                 .HasKey(it => new { it.ArticleId, it.TagId });
 
-            modelBuilder
+            builder
                 .Entity<Tag>()
                 .HasKey(it => it.Id);
 
-            modelBuilder
+            builder
                 .Entity<Tag>()
                 .Property(it => it.Name)
                 .IsRequired();
 
-            modelBuilder
+            builder
                 .Entity<Tag>()
                 .HasMany(it => it.Articles)
                 .WithOne(it => it.Tag);

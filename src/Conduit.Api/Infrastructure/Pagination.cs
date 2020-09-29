@@ -1,19 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Conduit.Api.Infrastructure
 {
     public class Pagination
     {
-        protected Pagination(IEnumerable items, int page, int pageSize)
+        protected Pagination(IEnumerable items, int page, int pageSize, int total)
         {
-            Items = items.Cast<object>().Skip((page - 1) * pageSize).Take(pageSize);
+            Items = items;
             Page = page;
             PageSize = pageSize;
-            Total = items.Cast<object>().Count();
-            Pages = (int)Math.Ceiling(Total / (double)pageSize);
+            Total = total;
+            Pages = (int)Math.Ceiling(total / (double)pageSize);
         }
 
         public IEnumerable Items { get; }
@@ -26,15 +25,15 @@ namespace Conduit.Api.Infrastructure
 
         public int Pages { get; }
 
-        public static Pagination<T> Of<T>(IEnumerable<T> items, int page, int pageSize)
+        public static Pagination<T> Of<T>(IEnumerable<T> items, int page, int pageSize, int total)
         {
-            return new Pagination<T>(items, page, pageSize);
+            return new Pagination<T>(items, page, pageSize, total);
         }
     }
 
     public class Pagination<T> : Pagination
     {
-        public Pagination(IEnumerable<T> items, int page, int pageSize) : base(items, page, pageSize)
+        public Pagination(IEnumerable<T> items, int page, int pageSize, int total) : base(items, page, pageSize, total)
         {
         }
     }

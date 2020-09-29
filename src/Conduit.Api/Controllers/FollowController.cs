@@ -13,9 +13,9 @@ namespace Conduit.Api.Controllers
     [Route("api/user/{subscriptionId}/follow")]
     public class FollowController : ControllerBase
     {
-        private readonly IdentityDbContext _context;
+        private readonly ConduitDbContext _context;
 
-        public FollowController(IdentityDbContext context)
+        public FollowController(ConduitDbContext context)
         {
             _context = context;
         }

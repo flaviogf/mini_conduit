@@ -3,20 +3,60 @@ using System;
 using Conduit.Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Conduit.Api.Database.Identity
+namespace Conduit.Api.Database.Migrations
 {
-    [DbContext(typeof(IdentityDbContext))]
-    [Migration("20200928170704_V1")]
-    partial class V1
+    [DbContext(typeof(ConduitDbContext))]
+    partial class ConduitDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.8");
+
+            modelBuilder.Entity("Conduit.Api.Models.Article", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Articles");
+                });
+
+            modelBuilder.Entity("Conduit.Api.Models.ArticleTag", b =>
+                {
+                    b.Property<string>("ArticleId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TagId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ArticleId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ArticleTag");
+                });
 
             modelBuilder.Entity("Conduit.Api.Models.Role", b =>
                 {
@@ -42,6 +82,20 @@ namespace Conduit.Api.Database.Identity
                         .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("Conduit.Api.Models.Tag", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Conduit.Api.Models.User", b =>
@@ -223,6 +277,28 @@ namespace Conduit.Api.Database.Identity
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Conduit.Api.Models.Article", b =>
+                {
+                    b.HasOne("Conduit.Api.Models.User", "Author")
+                        .WithMany("Articles")
+                        .HasForeignKey("AuthorId");
+                });
+
+            modelBuilder.Entity("Conduit.Api.Models.ArticleTag", b =>
+                {
+                    b.HasOne("Conduit.Api.Models.Article", "Article")
+                        .WithMany("Tags")
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Conduit.Api.Models.Tag", "Tag")
+                        .WithMany("Articles")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Conduit.Api.Models.UserSubscription", b =>
