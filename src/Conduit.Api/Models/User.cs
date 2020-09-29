@@ -30,6 +30,13 @@ namespace Conduit.Api.Models
             Subscriptions.Add(subscription);
         }
 
+        public void RemoveSubscription(User user)
+        {
+            UserSubscription subscription = new UserSubscription { SubscriberId = Id, SubscriptionId = user.Id };
+
+            Subscriptions.Remove(subscription);
+        }
+
         public override bool Equals(object obj)
         {
             return obj is User user && Id == user.Id;
