@@ -37,7 +37,7 @@ namespace Conduit.Api.Controllers
 
             if (subscriber == null)
             {
-                return UnprocessableEntity("The current user does not exist.");
+                return UnprocessableEntity(Res.Failure("The current user does not exist."));
             }
 
             if (subscriber.Equals(subscription))
@@ -54,7 +54,7 @@ namespace Conduit.Api.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(Res.Success());
         }
     }
 }
