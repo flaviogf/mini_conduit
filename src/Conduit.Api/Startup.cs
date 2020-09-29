@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -34,7 +35,7 @@ namespace Conduit.Api
             services.AddDbContext<ConduitDbContext>(it => it.UseSqlite(_configuration.GetConnectionString("ConduitDbContext")));
 
             services
-                .AddIdentity<User, Role>()
+                .AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ConduitDbContext>();
 
             services.Configure<IdentityOptions>(it =>
@@ -79,9 +80,9 @@ namespace Conduit.Api
             {
                 it.CreateMap<Article, ArticleViewModel>();
                 it.CreateMap<ArticleTag, ArticleTagViewModel>();
-                it.CreateMap<Role, RoleViewModel>();
                 it.CreateMap<Tag, TagViewModel>();
                 it.CreateMap<User, UserViewModel>();
+                it.CreateMap<UserSubscription, UserSubscriptionViewModel>();
             }, Assembly.GetExecutingAssembly());
 
             services
@@ -100,9 +101,37 @@ namespace Conduit.Api
                     };
                 });
 
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(it =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Conduit", Version = "v1" });
+                it.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Conduit",
+                });
+
+                it.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                it.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
             });
         }
 

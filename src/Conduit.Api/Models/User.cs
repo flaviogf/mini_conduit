@@ -6,11 +6,15 @@ namespace Conduit.Api.Models
 {
     public class User : IdentityUser
     {
+        public string Avatar { get; set; }
+
+        public string Bio { get; set; }
+
         public IList<Article> Articles { get; set; } = new List<Article>();
 
-        public ISet<UserSubscription> Subscriptions { get; set; } = new HashSet<UserSubscription>();
+        public IList<UserSubscription> Subscriptions { get; set; } = new List<UserSubscription>();
 
-        public ISet<UserSubscription> Subscribers { get; set; } = new HashSet<UserSubscription>();
+        public IList<UserSubscription> Subscribers { get; set; } = new List<UserSubscription>();
 
         public bool HasSubscription(User user)
         {
