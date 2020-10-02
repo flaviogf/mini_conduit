@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Conduit.Api.Database;
@@ -36,10 +35,10 @@ namespace Conduit.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.GetUserAsync(User);
 
             var articles = await _context.Articles
-                .FromSqlInterpolated($"SELECT a.* FROM Articles a JOIN UserArticle ua ON a.Id = ua.ArticleId WHERE ua.UserId = {userId}")
+                .FromSqlInterpolated($"SELECT a.* FROM Articles a JOIN UserArticle ua ON a.Id = ua.ArticleId WHERE ua.UserId = {user.Id}")
                 .Include(it => it.Author)
                 .Include(it => it.Tags)
                 .ThenInclude(it => it.Tag)
@@ -49,7 +48,7 @@ namespace Conduit.Api.Controllers
                 .ToListAsync();
 
             var total = await _context.Articles
-                .FromSqlInterpolated($"SELECT a.* FROM Articles a JOIN UserArticle ua ON a.Id = ua.ArticleId WHERE ua.UserId = {userId}")
+                .FromSqlInterpolated($"SELECT a.* FROM Articles a JOIN UserArticle ua ON a.Id = ua.ArticleId WHERE ua.UserId = {user.Id}")
                 .Include(it => it.Author)
                 .CountAsync();
 
