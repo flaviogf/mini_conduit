@@ -109,6 +109,34 @@ namespace Conduit.Api.Database
 
             #endregion
 
+            #region UserArticle
+
+            builder
+                .Entity<UserArticle>()
+                .HasKey(it => new { it.UserId, it.ArticleId });
+
+            builder
+                .Entity<UserArticle>()
+                .HasOne(it => it.User)
+                .WithMany(it => it.Favorites);
+
+            builder
+                .Entity<UserArticle>()
+                .Property(it => it.UserId)
+                .IsRequired();
+
+            builder
+                .Entity<UserArticle>()
+                .HasOne(it => it.Article)
+                .WithMany(it => it.Users);
+
+            builder
+                .Entity<UserArticle>()
+                .Property(it => it.ArticleId)
+                .IsRequired();
+
+            #endregion
+
             #region UserSubscription
 
             builder

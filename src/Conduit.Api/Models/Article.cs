@@ -15,6 +15,8 @@ namespace Conduit.Api.Models
 
         public User Author { get; set; }
 
+        public IList<UserArticle> Users { get; set; } = new List<UserArticle>();
+
         public IList<ArticleTag> Tags { get; set; } = new List<ArticleTag>();
 
         public void AddTags(IEnumerable<Tag> tags)

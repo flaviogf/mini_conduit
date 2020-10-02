@@ -14,6 +14,8 @@ namespace Conduit.Api.Models
 
         public IList<UserSubscription> Subscriptions { get; set; } = new List<UserSubscription>();
 
+        public IList<UserArticle> Favorites { get; set; } = new List<UserArticle>();
+
         public IList<UserSubscription> Subscribers { get; set; } = new List<UserSubscription>();
 
         public bool HasSubscription(User user)
@@ -35,6 +37,27 @@ namespace Conduit.Api.Models
             UserSubscription subscription = new UserSubscription { SubscriberId = Id, SubscriptionId = user.Id };
 
             Subscriptions.Remove(subscription);
+        }
+
+        public bool HasFavorite(Article article)
+        {
+            var favorite = new UserArticle { UserId = this.Id, ArticleId = article.Id };
+
+            return Favorites.Contains(favorite);
+        }
+
+        public void AddFavorite(Article article)
+        {
+            var favorite = new UserArticle { UserId = this.Id, ArticleId = article.Id };
+
+            Favorites.Add(favorite);
+        }
+
+        public void RemoveFavorite(Article article)
+        {
+            var favorite = new UserArticle { UserId = this.Id, ArticleId = article.Id };
+
+            Favorites.Remove(favorite);
         }
 
         public override bool Equals(object obj)
