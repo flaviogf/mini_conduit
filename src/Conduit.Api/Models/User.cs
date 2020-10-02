@@ -18,6 +18,8 @@ namespace Conduit.Api.Models
 
         public IList<UserSubscription> Subscribers { get; set; } = new List<UserSubscription>();
 
+        public IList<ArticleComment> Comments { get; set; } = new List<ArticleComment>();
+
         public bool HasSubscription(User user)
         {
             UserSubscription subscription = new UserSubscription { SubscriberId = Id, SubscriptionId = user.Id };
@@ -58,6 +60,13 @@ namespace Conduit.Api.Models
             var favorite = new UserArticle { UserId = this.Id, ArticleId = article.Id };
 
             Favorites.Remove(favorite);
+        }
+
+        public void Comment(Article article, string text)
+        {
+            var articleComment = new ArticleComment { Id = Guid.NewGuid().ToString(), Article = article, User = this, Text = text };
+
+            Comments.Add(articleComment);
         }
 
         public override bool Equals(object obj)

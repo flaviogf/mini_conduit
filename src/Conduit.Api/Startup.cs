@@ -79,6 +79,7 @@ namespace Conduit.Api
             services.AddAutoMapper(it =>
             {
                 it.CreateMap<Article, ArticleViewModel>();
+                it.CreateMap<ArticleComment, ArticleCommentViewModel>();
                 it.CreateMap<ArticleTag, ArticleTagViewModel>();
                 it.CreateMap<Tag, TagViewModel>();
                 it.CreateMap<User, UserViewModel>();

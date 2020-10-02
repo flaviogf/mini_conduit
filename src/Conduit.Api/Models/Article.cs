@@ -19,6 +19,8 @@ namespace Conduit.Api.Models
 
         public IList<ArticleTag> Tags { get; set; } = new List<ArticleTag>();
 
+        public IList<ArticleComment> Comments { get; set; } = new List<ArticleComment>();
+
         public void AddTags(IEnumerable<Tag> tags)
         {
             foreach (var tag in tags)

@@ -51,6 +51,29 @@ namespace Conduit.Api.Database
 
             #endregion
 
+            #region ArticleComment
+
+            builder
+                .Entity<ArticleComment>()
+                .HasKey(it => it.Id);
+
+            builder
+                .Entity<ArticleComment>()
+                .HasOne(it => it.Article)
+                .WithMany(it => it.Comments);
+
+            builder
+                .Entity<ArticleComment>()
+                .HasOne(it => it.User)
+                .WithMany(it => it.Comments);
+
+            builder
+                .Entity<ArticleComment>()
+                .Property(it => it.Text)
+                .IsRequired();
+
+            #endregion
+
             #region ArticleTag
 
             builder

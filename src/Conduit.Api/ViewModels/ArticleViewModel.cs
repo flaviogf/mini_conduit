@@ -15,5 +15,7 @@ namespace Conduit.Api.ViewModels
         public UserViewModel Author { get; set; }
 
         public IList<ArticleTagViewModel> Tags { get; set; }
+
+        public IList<ArticleCommentViewModel> Comments { get; set; }
     }
 }
