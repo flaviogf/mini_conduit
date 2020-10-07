@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Conduit.Infrastructure.Tags
 {
-    public class DapperTagRepository : ITagRepository
+    public sealed class DapperTagRepository : ITagRepository
     {
         private readonly IUnitOfWork _uow;
 

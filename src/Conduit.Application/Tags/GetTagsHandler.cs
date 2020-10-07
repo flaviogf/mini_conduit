@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Conduit.Domain.Tags;
+using CSharpFunctionalExtensions;
 using MediatR;
 
 namespace Conduit.Application.Tags

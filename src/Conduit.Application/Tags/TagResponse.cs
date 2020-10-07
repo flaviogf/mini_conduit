@@ -2,7 +2,7 @@ using Conduit.Domain.Tags;
 
 namespace Conduit.Application.Tags
 {
-    public class TagResponse
+    public sealed class TagResponse
     {
         internal TagResponse(Tag tag)
         {

@@ -9,7 +9,7 @@ namespace Conduit.Presentation.Api.Tags
     [AllowAnonymous]
     [ApiController]
     [Route("api/tag")]
-    public class TagController : ControllerBase
+    public sealed class TagController : ControllerBase
     {
         private readonly IMediator _mediator;
 
