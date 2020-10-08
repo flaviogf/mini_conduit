@@ -24,7 +24,10 @@ namespace Conduit.Infrastructure.Tags
         {
             try
             {
-                var tags = await _uow.Connection.QueryAsync<Tag>("SELECT * FROM Tags", transaction: _uow.Transaction);
+                var tags = await _uow.Connection.QueryAsync<Tag>(
+                    sql: "SELECT * FROM Tags",
+                    transaction: _uow.Transaction
+                );
 
                 return tags;
             }
