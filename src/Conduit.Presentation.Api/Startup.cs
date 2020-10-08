@@ -35,6 +35,8 @@ namespace Conduit.Presentation.Api
         {
             var connectionString = _configuration.GetConnectionString("Conduit");
 
+            services.AddHttpContextAccessor();
+
             services.AddScoped<IDbConnection>(it => new SqlConnection(connectionString));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -46,6 +48,8 @@ namespace Conduit.Presentation.Api
             services.AddScoped<IUserRepository, DapperUserRepository>();
 
             services.AddScoped<IAuth, LocalAuth>();
+
+            services.AddScoped<IHash, BCryptHash>();
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("Conduit.Application"));
 
