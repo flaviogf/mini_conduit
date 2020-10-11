@@ -11,5 +11,12 @@ namespace Conduit.Infrastructure
 
             return Task.FromResult(result);
         }
+
+        public Task<bool> Compare(string value, string hash)
+        {
+            var result = BCrypt.Net.BCrypt.Verify(value, hash);
+
+            return Task.FromResult(result);
+        }
     }
 }

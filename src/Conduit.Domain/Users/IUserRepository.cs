@@ -7,6 +7,8 @@ namespace Conduit.Domain.Users
     {
         Task<Result> Add(User user);
 
+        Task<Maybe<User>> FindByEmail(string email);
+
         Task<bool> CheckEmail(string email);
     }
 }

@@ -1,11 +1,13 @@
 using System;
 using System.Data;
 using System.Linq;
+using System.Text;
 using Conduit.Application;
 using Conduit.Domain.Users;
 using Conduit.Infrastructure;
 using Conduit.Infrastructure.Users;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace Conduit.Presentation.Api
@@ -34,9 +37,34 @@ namespace Conduit.Presentation.Api
 
             services.AddScoped<IHash, BcryptHash>();
 
+            services.AddScoped<IToken, JwtToken>();
+
             services.AddScoped<IUserRepository, DapperUserRepository>();
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("Conduit.Application"));
+
+            services
+                .AddAuthentication(it =>
+                {
+                    it.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    it.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(it =>
+                {
+                    it.RequireHttpsMetadata = false;
+
+                    it.SaveToken = true;
+
+                    it.TokenValidationParameters.ValidateAudience = false;
+                    it.TokenValidationParameters.ValidateIssuer = false;
+                    it.TokenValidationParameters.ValidateIssuerSigningKey = true;
+
+                    var secret = _configuration.GetValue<string>("Jwt:Secret");
+
+                    var key = Encoding.UTF8.GetBytes(secret);
+
+                    it.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(key);
+                });
 
             services
                 .AddControllers()
@@ -72,6 +100,10 @@ namespace Conduit.Presentation.Api
             });
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(it => it.MapControllers());
         }

@@ -42,6 +42,29 @@ namespace Conduit.Infrastructure.Users
             }
         }
 
+        public async Task<Maybe<User>> FindByEmail(string email)
+        {
+            try
+            {
+                var user = await _uow.Connection.QueryFirstOrDefaultAsync<User>(
+                    sql: "SELECT TOP 1 * FROM [Users] WHERE [Email] = @Email",
+                    param: new
+                    {
+                        Email = email
+                    },
+                    transaction: _uow.Transaction
+                );
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+
+                return null;
+            }
+        }
+
         public async Task<bool> CheckEmail(string email)
         {
             try
