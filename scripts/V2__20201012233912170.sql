@@ -1,0 +1,6 @@
+CREATE TABLE UserFollowers
+(
+    UserId CHAR(36) NOT NULL FOREIGN KEY REFERENCES Users(Id),
+    FollowerId CHAR(36) NOT NULL FOREIGN KEY REFERENCES Users(Id),
+    PRIMARY KEY (UserId, FollowerId)
+)

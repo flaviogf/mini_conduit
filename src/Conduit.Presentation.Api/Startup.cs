@@ -31,9 +31,13 @@ namespace Conduit.Presentation.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             services.AddScoped<IDbConnection>(it => new SqlConnection(_configuration.GetConnectionString("Conduit")));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<IAuth, LocalAuth>();
 
             services.AddScoped<IHash, BcryptHash>();
 
@@ -79,9 +83,33 @@ namespace Conduit.Presentation.Api
                     };
                 });
 
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(it =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Conduit", Version = "v1" });
+                it.SwaggerDoc("v1", new OpenApiInfo { Title = "Conduit", Version = "v1" });
+
+                it.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                it.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
             });
         }
 

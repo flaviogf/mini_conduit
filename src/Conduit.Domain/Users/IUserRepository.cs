@@ -5,7 +5,11 @@ namespace Conduit.Domain.Users
 {
     public interface IUserRepository
     {
-        Task<Result> Add(User user);
+        Task<Result> Insert(User user);
+
+        Task<Result> Update(User user);
+
+        Task<Maybe<User>> Find(string id);
 
         Task<Maybe<User>> FindByEmail(string email);
 

@@ -36,7 +36,7 @@ namespace Conduit.Application.Users
                 passwordHash: passwordHash
             );
 
-            var result = await _userRepository.Add(user);
+            var result = await _userRepository.Insert(user);
 
             if (result.IsFailure)
             {
