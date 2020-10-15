@@ -3,8 +3,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using Conduit.Application;
+using Conduit.Domain.Tags;
 using Conduit.Domain.Users;
 using Conduit.Infrastructure;
+using Conduit.Infrastructure.Tags;
 using Conduit.Infrastructure.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,6 +44,8 @@ namespace Conduit.Presentation.Api
             services.AddScoped<IHash, BcryptHash>();
 
             services.AddScoped<IToken, JwtToken>();
+
+            services.AddScoped<ITagRepository, DapperTagRepository>();
 
             services.AddScoped<IUserRepository, DapperUserRepository>();
 
