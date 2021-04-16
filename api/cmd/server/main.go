@@ -7,8 +7,9 @@ import (
 	"os"
 
 	"github.com/flaviogf/conduit/api/internal/handler"
+	"github.com/flaviogf/conduit/api/internal/middleware"
 	"github.com/flaviogf/conduit/api/internal/model"
-	"github.com/go-openapi/runtime/middleware"
+	openapi "github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 
 	_ "github.com/lib/pq"
@@ -23,15 +24,17 @@ func main() {
 
 	model.DB = db
 
-	r := mux.NewRouter()
-
-	r.HandleFunc("/users/login", handler.AuthenticateUserHandler)
-
-	http.Handle("/docs", middleware.SwaggerUI(middleware.SwaggerUIOpts{}, nil))
+	http.Handle("/docs", openapi.SwaggerUI(openapi.SwaggerUIOpts{}, nil))
 
 	http.Handle("/swagger.json", http.FileServer(http.Dir("./")))
 
-	http.Handle("/api", r)
+	r := mux.NewRouter()
+
+	r.Use(middleware.Cors)
+
+	r.HandleFunc("/api/users/login", handler.AuthenticateUserHandler).Methods(http.MethodPost)
+
+	http.Handle("/", r)
 
 	log.Println(http.ListenAndServe(":3000", nil))
 }
