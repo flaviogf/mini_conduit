@@ -39,7 +39,7 @@ func AuthenticateUserHandler(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 
-		rw.WriteHeader(http.StatusBadRequest)
+		rw.WriteHeader(http.StatusUnprocessableEntity)
 
 		return
 	}
@@ -49,7 +49,7 @@ func AuthenticateUserHandler(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 
-		rw.WriteHeader(http.StatusInternalServerError)
+		rw.WriteHeader(http.StatusUnauthorized)
 
 		return
 	}
