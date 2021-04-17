@@ -14,9 +14,17 @@ func NewHandler() http.Handler {
 
 	r.Use(middleware.Json)
 
-	r.HandleFunc("/api/users/login", AuthenticateUserHandler).Methods(http.MethodPost)
+	p := r.NewRoute().Subrouter()
 
-	r.HandleFunc("/api/user", RegisterUserHandler).Methods(http.MethodPost)
+	p.HandleFunc("/api/users/login", AuthenticateUserHandler).Methods(http.MethodPost)
+
+	p.HandleFunc("/api/user", RegisterUserHandler).Methods(http.MethodPost)
+
+	a := r.NewRoute().Subrouter()
+
+	a.Use(middleware.Authorize)
+
+	a.HandleFunc("/api/user", GetCurrentUserHandler).Methods(http.MethodGet)
 
 	return r
 }

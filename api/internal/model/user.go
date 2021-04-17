@@ -29,6 +29,22 @@ func NewUser(id int64, username, email, passwordHash, bio, image string) *User {
 	}
 }
 
+func GetUser(ctx context.Context, id int64) (*User, error) {
+	row := DB.QueryRowContext(ctx, "SELECT id, username, email, password_hash, bio, image FROM users WHERE id = $1", id)
+
+	if err := row.Err(); err != nil {
+		return nil, err
+	}
+
+	var user User
+
+	if err := row.Scan(&user.ID, &user.Username, &user.Email, &user.PasswordHash, &user.Bio, &user.Image); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func GetUserByEmail(ctx context.Context, email string) (*User, error) {
 	row := DB.QueryRowContext(ctx, "SELECT id, username, email, password_hash, bio, image FROM users WHERE email = $1", email)
 
@@ -52,6 +68,10 @@ func (u User) Attempt(password string) (string, error) {
 		return "", err
 	}
 
+	return u.Token()
+}
+
+func (u User) Token() (string, error) {
 	claims := jwt.StandardClaims{
 		Subject: strconv.FormatInt(u.ID, 10),
 	}

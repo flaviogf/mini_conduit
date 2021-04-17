@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/flaviogf/conduit/api/internal/model"
 	"golang.org/x/crypto/bcrypt"
@@ -137,17 +138,63 @@ func RegisterUserHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := user.Attempt(request.User.Password)
+	token, err := user.Token()
 
 	if err != nil {
 		log.Println(err)
 
-		rw.WriteHeader(http.StatusUnauthorized)
+		rw.WriteHeader(http.StatusInternalServerError)
 
 		return
 	}
 
 	rw.WriteHeader(http.StatusCreated)
+
+	response := UserResponse{User{user.Email, token, user.Username, user.Bio, user.Image}}
+
+	enc := json.NewEncoder(rw)
+
+	err = enc.Encode(response)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+}
+
+func GetCurrentUserHandler(rw http.ResponseWriter, r *http.Request) {
+	userId, err := strconv.ParseInt(r.Header.Get("X-User"), 10, 64)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	user, err := model.GetUser(r.Context(), userId)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	token, err := user.Token()
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
 
 	response := UserResponse{User{user.Email, token, user.Username, user.Bio, user.Image}}
 
