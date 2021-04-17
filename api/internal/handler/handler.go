@@ -20,6 +20,8 @@ func NewHandler() http.Handler {
 
 	p.HandleFunc("/api/user", RegisterUserHandler).Methods(http.MethodPost)
 
+	p.HandleFunc("/api/profiles/{username}", GetProfile).Methods(http.MethodGet)
+
 	a := r.NewRoute().Subrouter()
 
 	a.Use(middleware.Authorize)
