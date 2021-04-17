@@ -838,16 +838,16 @@
         "email": {
           "type": "string"
         },
-        "token": {
-          "type": "string"
-        },
         "username": {
           "type": "string"
         },
-        "bio": {
+        "password": {
           "type": "string"
         },
         "image": {
+          "type": "string"
+        },
+        "bio": {
           "type": "string"
         }
       }

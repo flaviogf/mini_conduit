@@ -210,3 +210,115 @@ func GetCurrentUserHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+type UpdateUserRequest struct {
+	User UpdateUser `json:"user"`
+}
+
+type UpdateUser struct {
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Image    string `json:"image"`
+	Bio      string `json:"bio"`
+}
+
+func UpdateUserHandler(rw http.ResponseWriter, r *http.Request) {
+	dec := json.NewDecoder(r.Body)
+
+	var request UpdateUserRequest
+
+	err := dec.Decode(&request)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusUnprocessableEntity)
+
+		return
+	}
+
+	userId, err := strconv.ParseInt(r.Header.Get("X-User"), 10, 64)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	user, err := model.GetUser(r.Context(), userId)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	sameEmail, err := model.GetUserByEmail(r.Context(), request.User.Email)
+
+	if sameEmail != nil && user.ID != sameEmail.ID {
+		log.Println("email already taken")
+
+		rw.WriteHeader(http.StatusUnprocessableEntity)
+
+		return
+	}
+
+	hash, err := getPasswordHash(request, user)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	user = model.NewUser(user.ID, request.User.Username, request.User.Email, string(hash), request.User.Bio, request.User.Image)
+
+	err = user.Save(r.Context())
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	token, err := user.Token()
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	response := UserResponse{User{user.Email, token, user.Username, user.Bio, user.Image}}
+
+	enc := json.NewEncoder(rw)
+
+	err = enc.Encode(response)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+}
+
+func getPasswordHash(request UpdateUserRequest, user *model.User) ([]byte, error) {
+	if len(request.User.Password) > 0 {
+		return bcrypt.GenerateFromPassword([]byte(request.User.Password), 8)
+	}
+
+	return []byte(user.PasswordHash), nil
+}

@@ -26,5 +26,7 @@ func NewHandler() http.Handler {
 
 	a.HandleFunc("/api/user", GetCurrentUserHandler).Methods(http.MethodGet)
 
+	a.HandleFunc("/api/user", UpdateUserHandler).Methods(http.MethodPut)
+
 	return r
 }
