@@ -258,7 +258,7 @@ func UpdateUserHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sameEmail, err := model.GetUserByEmail(r.Context(), request.User.Email)
+	sameEmail, _ := model.GetUserByEmail(r.Context(), request.User.Email)
 
 	if sameEmail != nil && user.ID != sameEmail.ID {
 		log.Println("email already taken")

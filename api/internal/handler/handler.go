@@ -20,7 +20,7 @@ func NewHandler() http.Handler {
 
 	p.HandleFunc("/api/user", RegisterUserHandler).Methods(http.MethodPost)
 
-	p.HandleFunc("/api/profiles/{username}", GetProfile).Methods(http.MethodGet)
+	p.HandleFunc("/api/profiles/{username}", GetProfileHandler).Methods(http.MethodGet)
 
 	a := r.NewRoute().Subrouter()
 
@@ -29,6 +29,8 @@ func NewHandler() http.Handler {
 	a.HandleFunc("/api/user", GetCurrentUserHandler).Methods(http.MethodGet)
 
 	a.HandleFunc("/api/user", UpdateUserHandler).Methods(http.MethodPut)
+
+	a.HandleFunc("/api/profiles/{username}/follow", FollowUserHandler).Methods(http.MethodPost)
 
 	return r
 }

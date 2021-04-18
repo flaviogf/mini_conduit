@@ -103,6 +103,16 @@ func (u User) Token() (string, error) {
 	return ss, nil
 }
 
+func (u *User) Follow(ctx context.Context, user *User) error {
+	_, err := DB.ExecContext(ctx, "INSERT INTO user_followers (follower_id, following_id) VALUES ($1, $2)", u.ID, user.ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (u *User) Save(ctx context.Context) error {
 	if u.ID <= 0 {
 		return u.create(ctx)
