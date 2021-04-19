@@ -167,6 +167,11 @@
         "summary": "Get a profile",
         "description": "Get a profile of a user of the system. Auth is optional",
         "tags": ["Profile"],
+        "security": [
+          {
+            "Token": []
+          }
+        ],
         "operationId": "GetProfileByUsername",
         "parameters": [
           {

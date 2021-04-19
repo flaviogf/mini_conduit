@@ -14,6 +14,8 @@ func NewHandler() http.Handler {
 
 	r.Use(middleware.Json)
 
+	r.Use(middleware.Anonymous)
+
 	p := r.NewRoute().Subrouter()
 
 	p.HandleFunc("/api/users/login", AuthenticateUserHandler).Methods(http.MethodPost)

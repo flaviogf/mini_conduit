@@ -123,6 +123,22 @@ func (u *User) Unfollow(ctx context.Context, user *User) error {
 	return nil
 }
 
+func (u User) IsFollowing(ctx context.Context, user *User) (bool, error) {
+	row := DB.QueryRowContext(ctx, `SELECT EXISTS (SELECT 1 FROM user_followers WHERE follower_id = $1 AND following_id = $2)`, u.ID, user.ID)
+
+	if err := row.Err(); err != nil {
+		return false, err
+	}
+
+	var exists bool
+
+	if err := row.Scan(&exists); err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
 func (u *User) Save(ctx context.Context) error {
 	if u.ID <= 0 {
 		return u.create(ctx)
