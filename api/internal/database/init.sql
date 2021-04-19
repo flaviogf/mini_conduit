@@ -14,3 +14,8 @@ create table user_followers (
   foreign key(follower_id) references users(id),
   foreign key(following_id) references users(id)
 );
+
+create table tags (
+  id serial primary key not null,
+  content varchar(250) not null
+)

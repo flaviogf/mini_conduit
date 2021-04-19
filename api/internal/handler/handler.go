@@ -24,6 +24,8 @@ func NewHandler() http.Handler {
 
 	p.HandleFunc("/api/profiles/{username}", GetProfileHandler).Methods(http.MethodGet)
 
+	p.HandleFunc("/api/tags", GetTagsHandler).Methods(http.MethodGet)
+
 	a := r.NewRoute().Subrouter()
 
 	a.Use(middleware.Authorize)
