@@ -106,3 +106,61 @@ func FollowUserHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func UnfollowUserHandler(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	target, err := model.GetUserByUsername(r.Context(), vars["username"])
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	userId, err := strconv.ParseInt(r.Header.Get("X-User"), 10, 64)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	user, err := model.GetUser(r.Context(), userId)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	err = user.Unfollow(r.Context(), target)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	response := ProfileResponse{Profile{target.Username, target.Bio, target.Image, false}}
+
+	enc := json.NewEncoder(rw)
+
+	err = enc.Encode(response)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+}

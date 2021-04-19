@@ -32,5 +32,7 @@ func NewHandler() http.Handler {
 
 	a.HandleFunc("/api/profiles/{username}/follow", FollowUserHandler).Methods(http.MethodPost)
 
+	a.HandleFunc("/api/profiles/{username}/follow", UnfollowUserHandler).Methods(http.MethodDelete)
+
 	return r
 }
