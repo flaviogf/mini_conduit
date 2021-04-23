@@ -30,7 +30,33 @@ func NewArticle(slug, title, description, body string, createdAt, updatedAt *tim
 }
 
 func GetArticle(ctx context.Context, slug string) (*Article, error) {
-	row := DB.QueryRowContext(ctx, `SELECT slug, title, description, body, created_at, updated_at, author_id FROM articles WHERE slug = $1`, slug)
+	row := DB.QueryRowContext(
+		ctx,
+		`
+			SELECT
+				a.slug,
+				a.title,
+				a.description,
+				a.body,
+				a.created_at,
+				a.updated_at,
+				u.id author_id,
+				u.username author_username,
+				u.email author_email,
+				u.password_hash author_password_hash,
+				u.bio author_bio,
+				u.image author_image
+			FROM
+				articles a
+			JOIN
+				users u
+			ON
+				a.author_id = u.id
+			WHERE
+				slug = $1
+		`,
+		slug,
+	)
 
 	if err := row.Err(); err != nil {
 		return nil, err
@@ -38,11 +64,62 @@ func GetArticle(ctx context.Context, slug string) (*Article, error) {
 
 	var article Article
 
-	var authorId int64
+	var author User
 
-	if err := row.Scan(&article.Slug, &article.Title, &article.Description, &article.Body, &article.CreatedAt, &article.UpdatedAt, &authorId); err != nil {
+	if err := row.Scan(
+		&article.Slug,
+		&article.Title,
+		&article.Description,
+		&article.Body,
+		&article.CreatedAt,
+		&article.UpdatedAt,
+		&author.ID,
+		&author.Username,
+		&author.Email,
+		&author.PasswordHash,
+		&author.Bio,
+		&author.Image,
+	); err != nil {
 		return nil, err
 	}
+
+	article.Author = &author
+
+	var tags []*Tag
+
+	rows, err := DB.QueryContext(
+		ctx,
+		`
+			SELECT
+				t.id,
+				t.content
+			FROM
+				tags t
+			JOIN
+				article_tags at
+			ON
+				t.id = at.tag_id
+			WHERE
+				at.article_slug = $1
+		`,
+		slug,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var tag Tag
+
+		if err := rows.Scan(&tag.ID, &tag.Content); err != nil {
+			return nil, err
+		}
+
+		tags = append(tags, &tag)
+	}
+
+	article.Tags = tags
 
 	return &article, nil
 }

@@ -26,6 +26,8 @@ func NewHandler() http.Handler {
 
 	p.HandleFunc("/api/tags", GetTagsHandler).Methods(http.MethodGet)
 
+	p.HandleFunc("/api/articles/{slug}", GetArticleHandler).Methods(http.MethodGet)
+
 	a := r.NewRoute().Subrouter()
 
 	a.Use(middleware.Authorize)

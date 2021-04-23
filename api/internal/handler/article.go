@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/flaviogf/conduit/api/internal/model"
+	"github.com/gorilla/mux"
 )
 
 type NewArticleRequest struct {
@@ -32,7 +33,7 @@ type Article struct {
 	Title          string     `json:"title"`
 	Description    string     `json:"description"`
 	Body           string     `json:"body"`
-	Tags           []string   `json:"tags"`
+	Tags           []string   `json:"tagList"`
 	CreatedAt      *time.Time `json:"createdAt"`
 	UpdatedAt      *time.Time `json:"updatedAt"`
 	Favorited      bool       `json:"favorited"`
@@ -149,6 +150,58 @@ func NewArticleHandler(rw http.ResponseWriter, r *http.Request) {
 	}}
 
 	rw.WriteHeader(http.StatusCreated)
+
+	enc := json.NewEncoder(rw)
+
+	err = enc.Encode(response)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+}
+
+func GetArticleHandler(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	article, err := model.GetArticle(r.Context(), vars["slug"])
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	var tags = make([]string, 0)
+
+	for _, tag := range article.Tags {
+		tags = append(tags, tag.Content)
+	}
+
+	author := Profile{
+		Username:  article.Author.Username,
+		Bio:       article.Author.Bio,
+		Image:     article.Author.Image,
+		Following: false,
+	}
+
+	response := ArticleResponse{Article{
+		Slug:           article.Slug,
+		Title:          article.Title,
+		Description:    article.Description,
+		Body:           article.Body,
+		Tags:           tags,
+		CreatedAt:      article.CreatedAt,
+		UpdatedAt:      article.UpdatedAt,
+		Favorited:      false,
+		FavoritesCount: 0,
+		Author:         author,
+	}}
 
 	enc := json.NewEncoder(rw)
 
