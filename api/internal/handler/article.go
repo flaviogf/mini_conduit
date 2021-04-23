@@ -216,6 +216,30 @@ func GetArticleHandler(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func DeleteArticleHandler(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	article, err := model.GetArticle(r.Context(), vars["slug"])
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	err = article.Delete(r.Context())
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+}
+
 func slug(title string) string {
 	result := strings.ToLower(title)
 

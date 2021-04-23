@@ -42,5 +42,7 @@ func NewHandler() http.Handler {
 
 	a.HandleFunc("/api/articles", NewArticleHandler).Methods(http.MethodPost)
 
+	a.HandleFunc("/api/articles/{slug}", DeleteArticleHandler).Methods(http.MethodDelete)
+
 	return r
 }

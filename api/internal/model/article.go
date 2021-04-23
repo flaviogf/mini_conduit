@@ -157,3 +157,19 @@ func (a *Article) Save(ctx context.Context) error {
 
 	return nil
 }
+
+func (a *Article) Delete(ctx context.Context) error {
+	_, err := DB.ExecContext(ctx, `DELETE FROM article_tags WHERE article_slug = $1`, a.Slug)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = DB.ExecContext(ctx, `DELETE FROM articles WHERE slug = $1`, a.Slug)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
