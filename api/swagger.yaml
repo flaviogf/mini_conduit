@@ -1,0 +1,80 @@
+openapi: 3.0.0
+
+info:
+  title: Conduit API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api
+    description: development
+
+paths:
+  /users:
+    post:
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewUserRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    UserResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+        token:
+          type: string
+        username:
+          type: string
+        bio:
+          type: string
+        image:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+    NewUserRequest:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/NewUser"
+    NewUser:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
