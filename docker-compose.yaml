@@ -15,7 +15,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: conduit
     volumes:
-      - ./api/internal/database:/docker-entrypoint-initdb.d
+      - ./api/internal/db:/docker-entrypoint-initdb.d
       - data:/var/lib/postgresql/data
 
 volumes:
