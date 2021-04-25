@@ -4,6 +4,8 @@ services:
   api:
     build: ./api
     image: flaviogf/conduit-api
+    environment: 
+      CONDUIT_DB: "host=db user=postgres password=postgres dbname=conduit sslmode=disable"
     ports:
       - 3000:80
   db:
