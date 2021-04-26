@@ -9,6 +9,41 @@ servers:
     description: development
 
 paths:
+  /users/login:
+    post:
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SessionRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "402":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /users:
     post:
       tags:
@@ -76,6 +111,18 @@ components:
       properties:
         username:
           type: string
+        email:
+          type: string
+        password:
+          type: string
+    SessionRequest:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/Session"
+    Session:
+      type: object
+      properties:
         email:
           type: string
         password:
