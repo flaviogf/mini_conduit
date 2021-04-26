@@ -1,6 +1,11 @@
 package models
 
-import "context"
+import (
+	"context"
+	"strconv"
+
+	"github.com/dgrijalva/jwt-go"
+)
 
 type User struct {
 	ID           int64
@@ -20,6 +25,34 @@ func NewUser(id int64, username, email, passwordHash, bio, image string) *User {
 		Bio:          bio,
 		Image:        image,
 	}
+}
+
+func GetUserByEmail(ctx context.Context, email string) (User, error) {
+	sql := `SELECT id, username, email, password_hash, bio, image FROM users WHERE email = $1`
+
+	row := ctx.Value("tx").(Tx).QueryRowContext(ctx, sql, email)
+
+	if err := row.Err(); err != nil {
+		return User{}, err
+	}
+
+	var user User
+
+	if err := row.Scan(&user.ID, &user.Username, &user.Email, &user.PasswordHash, &user.Bio, &user.Image); err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}
+
+func (u User) Token(secret string) string {
+	claims := jwt.StandardClaims{ExpiresAt: 15000, Subject: strconv.FormatInt(u.ID, 10)}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	ss, _ := token.SignedString([]byte(secret))
+
+	return ss
 }
 
 func (u *User) Save(ctx context.Context) error {
