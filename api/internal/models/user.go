@@ -27,6 +27,26 @@ func NewUser(id int64, username, email, passwordHash, bio, image string) *User {
 	}
 }
 
+func GetCurrentUser(ctx context.Context) (User, error) {
+	id := ctx.Value("userId").(int)
+
+	sql := `SELECT id, username, email, password_hash, bio, image FROM users WHERE id = $1`
+
+	row := ctx.Value("tx").(Tx).QueryRowContext(ctx, sql, id)
+
+	if err := row.Err(); err != nil {
+		return User{}, err
+	}
+
+	var user User
+
+	if err := row.Scan(&user.ID, &user.Username, &user.Email, &user.PasswordHash, &user.Bio, &user.Image); err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}
+
 func GetUserByEmail(ctx context.Context, email string) (User, error) {
 	sql := `SELECT id, username, email, password_hash, bio, image FROM users WHERE email = $1`
 
@@ -46,7 +66,7 @@ func GetUserByEmail(ctx context.Context, email string) (User, error) {
 }
 
 func (u User) Token(secret string) string {
-	claims := jwt.StandardClaims{ExpiresAt: 15000, Subject: strconv.FormatInt(u.ID, 10)}
+	claims := jwt.StandardClaims{Subject: strconv.FormatInt(u.ID, 10)}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
