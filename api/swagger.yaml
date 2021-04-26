@@ -8,11 +8,15 @@ servers:
   - url: http://localhost:3000/api
     description: development
 
+security:
+  - BearerAuth: []
+
 paths:
   /users/login:
     post:
       tags:
         - users
+      security: []
       requestBody:
         required: true
         content:
@@ -48,6 +52,7 @@ paths:
     post:
       tags:
         - users
+      security: []
       requestBody:
         required: true
         content:
@@ -73,8 +78,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+    get:
+      tags:
+        - users
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
   schemas:
     UserResponse:
       type: object
