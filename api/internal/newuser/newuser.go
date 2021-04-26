@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/flaviogf/conduit/api/internal/models"
 	"golang.org/x/crypto/bcrypt"
@@ -86,7 +87,7 @@ func NewUserHandler(rw http.ResponseWriter, r *http.Request) {
 
 	response := UserResponse{User{
 		user.Email,
-		"",
+		user.Token(os.Getenv("CONDUIT_KEY")),
 		user.Username,
 		user.Bio,
 		user.Image,
