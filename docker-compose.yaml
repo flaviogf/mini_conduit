@@ -6,7 +6,7 @@ services:
     image: flaviogf/conduit-api
     environment:
       CONDUIT_DB: "host=db user=postgres password=postgres dbname=conduit sslmode=disable"
-      CONDUIT_SECRET: "calopsita"
+      CONDUIT_KEY: "calopsita"
     ports:
       - 3000:80
   db:
