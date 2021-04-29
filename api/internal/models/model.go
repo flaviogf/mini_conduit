@@ -12,6 +12,7 @@ type DB interface {
 }
 
 type Tx interface {
+	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
 	QueryRowContext(ctx context.Context, query string, args ...interface{}) *sql.Row
 	Commit() error
 	Rollback() error

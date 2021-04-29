@@ -76,6 +76,14 @@ func (u User) Token(secret string) string {
 }
 
 func (u *User) Save(ctx context.Context) error {
+	if u.ID > 0 {
+		return u.update(ctx)
+	}
+
+	return u.create(ctx)
+}
+
+func (u *User) create(ctx context.Context) error {
 	sql := `INSERT INTO users (username, email, password_hash, bio, image) VALUES ($1, $2, $3, $4, $5) RETURNING id`
 
 	row := ctx.Value("tx").(Tx).QueryRowContext(ctx, sql, u.Username, u.Email, u.PasswordHash, u.Bio, u.Image)
@@ -85,6 +93,18 @@ func (u *User) Save(ctx context.Context) error {
 	}
 
 	if err := row.Scan(&u.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *User) update(ctx context.Context) error {
+	sql := `UPDATE users SET username = $1, email = $2, password_hash = $3, bio = $4, image = $5 WHERE id = $6`
+
+	_, err := ctx.Value("tx").(Tx).ExecContext(ctx, sql, u.Username, u.Email, u.PasswordHash, u.Bio, u.Image, u.ID)
+
+	if err != nil {
 		return err
 	}
 
