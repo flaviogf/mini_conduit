@@ -6,3 +6,13 @@ CREATE TABLE users (
   bio varchar(250) not null,
   image varchar(250) not null
 );
+
+CREATE TABLE articles (
+  slug varchar(250) primary key not null,
+  title varchar(250) not null,
+  description varchar(250) not null,
+  body text not null,
+  created_at timestamp with time zone not null,
+  updated_at timestamp with time zone not null,
+  author_id int not null references users(id)
+);
