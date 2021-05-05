@@ -5,11 +5,7 @@ import (
 	"database/sql"
 )
 
-var Conn DB
-
-type DB interface {
-	Begin() (*sql.Tx, error)
-}
+var Conn *sql.DB
 
 type Tx interface {
 	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
