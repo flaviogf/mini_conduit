@@ -5,6 +5,7 @@ import (
 
 	"github.com/flaviogf/conduit/api/internal/currentuser"
 	"github.com/flaviogf/conduit/api/internal/middlewares"
+	"github.com/flaviogf/conduit/api/internal/newarticle"
 	"github.com/flaviogf/conduit/api/internal/newuser"
 	"github.com/flaviogf/conduit/api/internal/session"
 	"github.com/flaviogf/conduit/api/internal/updateuser"
@@ -27,6 +28,8 @@ func NewHandler(r *mux.Router) http.Handler {
 	a.HandleFunc("/api/users", currentuser.CurrentUserHandler).Methods(http.MethodGet)
 
 	a.HandleFunc("/api/users", updateuser.UpdateUserHandler).Methods(http.MethodPut)
+
+	a.HandleFunc("/api/articles", newarticle.NewArticleHandler).Methods(http.MethodPost)
 
 	return r
 }
