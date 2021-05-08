@@ -38,3 +38,17 @@ func (a *Article) Save(ctx context.Context) error {
 
 	return nil
 }
+
+func (a Article) AddTags(ctx context.Context, tags []string) error {
+	sql := `INSERT INTO article_tags (article_slug, tag) VALUES ($1, $2)`
+
+	for _, tag := range tags {
+		_, err := ctx.Value("tx").(Tx).ExecContext(ctx, sql, a.Slug, tag)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
