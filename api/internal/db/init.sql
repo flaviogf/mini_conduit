@@ -19,5 +19,6 @@ CREATE TABLE articles (
 
 CREATE TABLE article_tags (
   article_slug VARCHAR(250) not null references articles(slug),
-  tag VARCHAR(250) not null
+  tag VARCHAR(250) not null,
+  primary key(article_slug, tag)
 );
