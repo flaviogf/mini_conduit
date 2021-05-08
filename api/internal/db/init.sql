@@ -16,3 +16,8 @@ CREATE TABLE articles (
   updated_at timestamp with time zone not null,
   author_id int not null references users(id)
 );
+
+CREATE TABLE article_tags (
+  article_slug VARCHAR(250) not null references articles(slug),
+  tag VARCHAR(250) not null
+);
