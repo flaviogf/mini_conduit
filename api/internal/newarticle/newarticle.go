@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/flaviogf/conduit/api/internal/models"
@@ -80,6 +82,18 @@ func NewArticleHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = article.AddTags(ctx, request.Article.TagList)
+
+	if err != nil {
+		log.Println(err)
+
+		rw.WriteHeader(http.StatusInternalServerError)
+
+		_ = ctx.Value("tx").(models.Tx).Rollback()
+
+		return
+	}
+
 	user, err := models.GetCurrentUser(ctx)
 
 	if err != nil {
@@ -115,5 +129,5 @@ func NewArticleHandler(rw http.ResponseWriter, r *http.Request) {
 }
 
 func slugify(text string) string {
-	return text
+	return strings.ToLower(regexp.MustCompile(`\s`).ReplaceAllString(text, "-"))
 }
