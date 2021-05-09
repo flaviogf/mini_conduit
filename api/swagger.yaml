@@ -163,6 +163,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /articles/{slug}:
+    get:
+      tags:
+        - articles
+      parameters:
+        - in: path
+          name: slug
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
   securitySchemes:
@@ -191,9 +220,11 @@ components:
           items:
             type: string
         createdAt:
-          type: date-time
+          type: string
+          format: date-time
         updatedAt:
-          type: date-time
+          type: string
+          format: date-time
         author:
           type: object
           properties:
