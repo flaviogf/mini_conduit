@@ -68,7 +68,7 @@ func NewArticleHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	article := models.NewArticle(slugify(request.Article.Title), request.Article.Title, request.Article.Description, request.Article.Body, time.Now(), time.Now())
+	article := models.NewArticle(0, slugify(request.Article.Title), request.Article.Title, request.Article.Description, request.Article.Body, time.Now(), time.Now())
 
 	err = article.Save(ctx)
 
