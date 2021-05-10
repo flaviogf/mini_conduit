@@ -8,7 +8,8 @@ CREATE TABLE users (
 );
 
 CREATE TABLE articles (
-  slug varchar(250) primary key not null,
+  id serial primary key not null,
+  slug varchar(250) unique not null,
   title varchar(250) not null,
   description varchar(250) not null,
   body text not null,
@@ -18,7 +19,7 @@ CREATE TABLE articles (
 );
 
 CREATE TABLE article_tags (
-  article_slug VARCHAR(250) not null references articles(slug),
+  article_id int not null references articles(id),
   tag VARCHAR(250) not null,
-  primary key(article_slug, tag)
+  primary key(article_id, tag)
 );
