@@ -54,6 +54,18 @@ func (a *Article) Save(ctx context.Context) error {
 	return a.create(ctx)
 }
 
+func (a *Article) Destroy(ctx context.Context) error {
+	sql := `DELETE FROM articles WHERE id = $1`
+
+	_, err := ctx.Value("tx").(Tx).ExecContext(ctx, sql, a.ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (a Article) AddTags(ctx context.Context, tags []string) error {
 	sql := `INSERT INTO article_tags (article_id, tag) VALUES ($1, $2)`
 
