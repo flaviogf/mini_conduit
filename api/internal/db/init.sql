@@ -19,7 +19,7 @@ CREATE TABLE articles (
 );
 
 CREATE TABLE article_tags (
-  article_id int not null references articles(id),
+  article_id int not null references articles(id) on delete cascade,
   tag VARCHAR(250) not null,
   primary key(article_id, tag)
 );
