@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 
+	"github.com/flaviogf/conduit/api/internal/addcomment"
 	"github.com/flaviogf/conduit/api/internal/currentuser"
 	"github.com/flaviogf/conduit/api/internal/deletearticle"
 	"github.com/flaviogf/conduit/api/internal/getarticle"
@@ -39,6 +40,8 @@ func NewHandler(r *mux.Router) http.Handler {
 	a.HandleFunc("/api/articles/{slug}", updatearticle.UpdateArticleHandler).Methods(http.MethodPut)
 
 	a.HandleFunc("/api/articles/{slug}", deletearticle.DeleteArticleHandler).Methods(http.MethodDelete)
+
+	a.HandleFunc("/api/articles/{slug}/comments", addcomment.AddCommentHandler).Methods(http.MethodPost)
 
 	return r
 }
