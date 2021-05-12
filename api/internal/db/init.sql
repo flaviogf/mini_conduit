@@ -20,6 +20,15 @@ CREATE TABLE articles (
 
 CREATE TABLE article_tags (
   article_id int not null references articles(id) on delete cascade,
-  tag VARCHAR(250) not null,
+  tag varchar(250) not null,
   primary key(article_id, tag)
 );
+
+CREATE TABLE comments (
+  id serial primary key not null,
+  article_id int not null references articles(id) on delete cascade,
+  commenter_id int not null references users(id) on delete cascade,
+  body varchar(250) not null,
+  created_at timestamp with time zone not null,
+  updated_at timestamp with time zone not null
+)
