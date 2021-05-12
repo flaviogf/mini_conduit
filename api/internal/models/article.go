@@ -80,6 +80,24 @@ func (a Article) AddTags(ctx context.Context, tags []string) error {
 	return nil
 }
 
+func (a Article) AddComment(ctx context.Context, comment *Comment) error {
+	commenterId := ctx.Value("userId").(int)
+
+	sql := `INSERT INTO comments (article_id, commenter_id, body, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING id`
+
+	row := ctx.Value("tx").(Tx).QueryRowContext(ctx, sql, a.ID, commenterId, comment.Body, comment.CreatedAt, comment.UpdatedAt)
+
+	if err := row.Err(); err != nil {
+		return err
+	}
+
+	if err := row.Scan(&comment.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (a Article) GetAuthor(ctx context.Context) (User, error) {
 	sql := `SELECT id, username, email, password_hash, bio, image FROM users WHERE id = $1`
 
