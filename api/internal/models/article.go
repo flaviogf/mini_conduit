@@ -140,6 +140,30 @@ func (a Article) GetTags(ctx context.Context) ([]string, error) {
 	return tags, nil
 }
 
+func (a Article) GetComments(ctx context.Context) ([]Comment, error) {
+	sql := `SELECT id, body, created_at, updated_at, commenter_id FROM comments WHERE article_id = $1`
+
+	rows, err := ctx.Value("tx").(Tx).QueryContext(ctx, sql, a.ID)
+
+	if err != nil {
+		return []Comment{}, err
+	}
+
+	comments := make([]Comment, 0)
+
+	for rows.Next() {
+		var comment Comment
+
+		if err := rows.Scan(&comment.ID, &comment.Body, &comment.CreatedAt, &comment.UpdatedAt, &comment.commenterId); err != nil {
+			return []Comment{}, err
+		}
+
+		comments = append(comments, comment)
+	}
+
+	return comments, nil
+}
+
 func (a *Article) create(ctx context.Context) error {
 	authorId := ctx.Value("userId").(int)
 
