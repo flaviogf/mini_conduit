@@ -39,3 +39,15 @@ func (c Comment) GetAuthor(ctx context.Context) (User, error) {
 
 	return user, nil
 }
+
+func (c Comment) Destroy(ctx context.Context) error {
+	sql := `DELETE FROM comments WHERE id = $1`
+
+	_, err := ctx.Value("tx").(Tx).ExecContext(ctx, sql, c.ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
