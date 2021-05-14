@@ -164,6 +164,24 @@ func (a Article) GetComments(ctx context.Context) ([]Comment, error) {
 	return comments, nil
 }
 
+func (a Article) GetComment(ctx context.Context, id int64) (Comment, error) {
+	sql := `SELECT id, body, created_at, updated_at, commenter_id FROM comments WHERE id = $1 AND article_id = $2`
+
+	row := ctx.Value("tx").(Tx).QueryRowContext(ctx, sql, id, a.ID)
+
+	if err := row.Err(); err != nil {
+		return Comment{}, err
+	}
+
+	var comment Comment
+
+	if err := row.Scan(&comment.ID, &comment.Body, &comment.CreatedAt, &comment.UpdatedAt, &comment.commenterId); err != nil {
+		return Comment{}, err
+	}
+
+	return comment, nil
+}
+
 func (a *Article) create(ctx context.Context) error {
 	authorId := ctx.Value("userId").(int)
 
