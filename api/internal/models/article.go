@@ -28,6 +28,32 @@ func NewArticle(id int64, slug, title, description, body string, createdAt, upda
 	}
 }
 
+func GetArticles(ctx context.Context, author, tag string, limit, offset int) ([]Article, error) {
+	limit, offset = getOrDefault(limit, 10), getOrDefault(offset, 0)
+
+	sql := `SELECT DISTINCT a.id, a.slug, a.title, a.description, a.body, a.created_at, a.updated_at, u.id FROM articles a JOIN users u ON a.author_id = u.id JOIN article_tags at ON a.id = at.article_id WHERE (u.username = $1 OR $1 = '') AND (at.tag = $2 OR $2 = '') LIMIT $3 OFFSET $4`
+
+	rows, err := ctx.Value("tx").(Tx).QueryContext(ctx, sql, author, tag, limit, offset)
+
+	if err != nil {
+		return []Article{}, err
+	}
+
+	articles := make([]Article, 0)
+
+	for rows.Next() {
+		var article Article
+
+		if err := rows.Scan(&article.ID, &article.Slug, &article.Title, &article.Description, &article.Body, &article.CreatedAt, &article.UpdatedAt, &article.authorId); err != nil {
+			return []Article{}, err
+		}
+
+		articles = append(articles, article)
+	}
+
+	return articles, nil
+}
+
 func GetArticle(ctx context.Context, slug string) (Article, error) {
 	sql := `SELECT id, slug, title, description, body, created_at, updated_at, author_id FROM articles WHERE slug = $1`
 
@@ -212,4 +238,12 @@ func (a *Article) update(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func getOrDefault(value, other int) int {
+	if value == 0 {
+		return other
+	}
+
+	return value
 }
