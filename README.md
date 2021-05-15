@@ -28,9 +28,11 @@
 ```sh
 git clone https://github.com/flaviogf/mini_conduit.git
 
-cd godo
+cd mini_conduit
 
 docker-compose up --build -d
+
+# It's running at http://localhost:3000/docs
 ```
 
 ## :memo: License
