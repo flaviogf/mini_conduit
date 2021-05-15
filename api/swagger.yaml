@@ -163,6 +163,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+    get:
+      tags:
+        - articles
+      parameters:
+        - in: query
+          name: author
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: tag
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: limit
+          schema:
+            type: number
+            format: int
+          required: false
+        - in: query
+          name: offset
+          schema:
+            type: number
+            format: int
+          required: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticlesResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /articles/{slug}:
     get:
       tags:
@@ -383,6 +422,13 @@ components:
       properties:
         article:
           $ref: "#/components/schemas/Article"
+    ArticlesResponse:
+      type: object
+      properties:
+        articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Article"
     Article:
       type: object
       properties:
