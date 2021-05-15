@@ -11,7 +11,7 @@
 
 ## :rocket: Project
 
-:blue_book: This project is an API that contains the needed resources to manage a small blog
+:newspaper: This project is an API that contains the needed resources to manage a small blog
 
 ![api](.github/api.gif)
 
