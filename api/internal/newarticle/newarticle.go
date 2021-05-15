@@ -123,6 +123,8 @@ func NewArticleHandler(rw http.ResponseWriter, r *http.Request) {
 		},
 	}}
 
+	rw.WriteHeader(http.StatusCreated)
+
 	enc := json.NewEncoder(rw)
 
 	enc.Encode(response)

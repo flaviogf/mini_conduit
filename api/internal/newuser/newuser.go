@@ -83,8 +83,6 @@ func NewUserHandler(rw http.ResponseWriter, r *http.Request) {
 
 	_ = ctx.Value("tx").(models.Tx).Commit()
 
-	rw.WriteHeader(http.StatusCreated)
-
 	response := UserResponse{User{
 		user.Email,
 		user.Token(os.Getenv("CONDUIT_KEY")),
@@ -92,6 +90,8 @@ func NewUserHandler(rw http.ResponseWriter, r *http.Request) {
 		user.Bio,
 		user.Image,
 	}}
+
+	rw.WriteHeader(http.StatusCreated)
 
 	enc := json.NewEncoder(rw)
 
